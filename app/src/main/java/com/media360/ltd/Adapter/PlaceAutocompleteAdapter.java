@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
-public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePrediction> implements Filterable {
+public class PlaceAutocompleteAdapter
+        extends ArrayAdapter<AutocompletePrediction> implements Filterable {
 
     private static final String TAG = "PlaceAutocompleteAdapter";
     private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
@@ -123,6 +124,7 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
 
     private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
+
             PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, constraint.toString(), mBounds, mPlaceFilter);
             AutocompletePredictionBuffer autocompletePredictions = results.await(60, TimeUnit.SECONDS);
 

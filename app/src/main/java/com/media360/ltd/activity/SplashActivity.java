@@ -1,17 +1,25 @@
-package com.media360.ltd;
+package com.media360.ltd.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.media360.ltd.R;
 
 public class SplashActivity extends AppCompatActivity {
 
     private final Handler mHandler = new Handler();
     private Context mContext;
+    private LinearLayout llAnmiation;
+    private ImageView imgLogo;
 
 
     @Override
@@ -28,11 +36,25 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         mContext = this;
-        mHandler.postDelayed(mPendingLauncherRunnable, 3000);
+        mHandler.postDelayed(mPendingLauncherRunnable, 2000);
+        llAnmiation = (LinearLayout) this.findViewById(R.id.llAnmiation);
+        imgLogo = (ImageView) this.findViewById(R.id.imgLogo);
 
     }
 
     private final Runnable mPendingLauncherRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            llAnmiation.setVisibility(View.GONE);
+            imgLogo.setVisibility(View.VISIBLE);
+            imgLogo.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide));
+            mHandler.postDelayed(mPendingLauncherRunnableWationgTime, 2000);
+
+        }
+    };
+
+    private final Runnable mPendingLauncherRunnableWationgTime = new Runnable() {
         @Override
         public void run() {
 
@@ -46,6 +68,9 @@ public class SplashActivity extends AppCompatActivity {
         Intent mIntent = new Intent(mContext, HomeActivity.class);
         startActivity(mIntent);
         SplashActivity.this.finish();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
+
     }
 
 
