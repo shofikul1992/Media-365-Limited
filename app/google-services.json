@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "76253943972",
+    "firebase_url": "https://media360-3fac4.firebaseio.com",
+    "project_id": "media360-3fac4",
+    "storage_bucket": "media360-3fac4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76253943972:android:7666fc5eae1a9988",
+        "android_client_info": {
+          "package_name": "com.media360.ltd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "76253943972-pm94hb967bb9eia9upftrm9dh4ve8gnd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.media360.ltd",
+            "certificate_hash": "f3ed564b39658ba5077182c68de605f1df151c14"
+          }
+        },
+        {
+          "client_id": "76253943972-djs2btj191skr5inc0poqvrp50avd74f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKxk_BmmERFtvPNMr5vSh2QqsL7oY44GE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76253943972-djs2btj191skr5inc0poqvrp50avd74f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
