@@ -47,9 +47,6 @@ public class PlaceAutocompleteAdapter
         mBounds = bounds;
     }
 
-    public void setBounds(LatLngBounds bounds) {
-        mBounds = bounds;
-    }
 
 
     @Override

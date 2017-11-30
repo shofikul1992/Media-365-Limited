@@ -2,16 +2,15 @@ package com.media360.ltd.activity;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,33 +39,27 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.media360.ltd.Adapter.PlaceAutocompleteAdapter;
 import com.media360.ltd.R;
 import com.media360.ltd.Utils.DevicePermission;
-import com.media360.ltd.Utils.GPSTracker;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 
 public class HomeActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private Context mContext;
     private GoogleMap mGoogleMap;
     private SupportMapFragment mapFrag;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private GoogleApiClient mGoogleApiClient2;
-    private Location mLastLocation;
     private Marker mCurrLocationMarker;
-
     private AutoCompleteTextView insert_location;
     private AutoCompleteTextView autoDestationAddress;
     private PlaceAutocompleteAdapter mAdapter;
-    private GPSTracker mGPSTracker;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mContext = this;
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -77,11 +70,13 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         DevicePermission.setLocationPermission(HomeActivity.this);
         initialize();
 
+
     }
 
 
     private void initialize() {
-        mGPSTracker = new GPSTracker(HomeActivity.this);
+
+
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
@@ -89,7 +84,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         insert_location.setOnItemClickListener(mAutocompleteClickListener);
 
         autoDestationAddress = (AutoCompleteTextView) findViewById(R.id.autoDestationAddress);
-        autoDestationAddress.setOnItemClickListener(mAutocompleteClickListener);
+        autoDestationAddress.setOnItemClickListener(mAutocompleteClickListenertwo);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Places.GEO_DATA_API).addApi(Places.PLACE_DETECTION_API).build();
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null);
@@ -112,7 +107,10 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onResult(@NonNull PlaceBuffer places) {
                     if (places.getCount() == 1) {
+
                         setGoogleMapMarker(places.get(0).getLatLng().latitude, places.get(0).getLatLng().longitude);
+
+
                     } else {
                         Toast.makeText(getApplicationContext(), "SOMETHING_WENT_WRONG,TRY AGAIN", Toast.LENGTH_SHORT).show();
                     }
@@ -137,6 +135,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onResult(@NonNull PlaceBuffer places) {
                     if (places.getCount() == 1) {
                         setGoogleMapMarker(places.get(0).getLatLng().latitude, places.get(0).getLatLng().longitude);
+
                     } else {
                         Toast.makeText(getApplicationContext(), "SOMETHING_WENT_WRONG,TRY AGAIN", Toast.LENGTH_SHORT).show();
                     }
@@ -148,10 +147,29 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mGoogleMap.getUiSettings().setCompassEnabled(true);
+        mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
+        mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mGoogleMap.clear();
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+
+            }
+        });
 
         //Initialize Google Play Services
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -194,8 +212,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient2, mLocationRequest, this);
         }
 
-        setGoogleMapMarker(mGPSTracker.getLatitude(), mGPSTracker.getLatitude());
-
 
     }
 
@@ -209,44 +225,33 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
+//        mLastLocation = location;
         if (mCurrLocationMarker != null) {
+            //Place current location marker
+
+            mCurrLocationMarker.remove();
         }
 
-    }
 
-    public void setGoogleMapMarker(double latitude, double longitude) {
-        LatLng latLng = new LatLng(latitude, longitude);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 
+
     }
 
-    public void getAddress(double latitude, double longitude) {
 
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
+    public void setGoogleMapMarker(double latitude, double longitude) {
 
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-
-            Log.w("Address", "are" + city);
-            insert_location.setCompletionHint("" + address);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 
     }
 

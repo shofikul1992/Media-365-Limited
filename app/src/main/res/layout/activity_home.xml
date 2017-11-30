@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/rounded_corner_map"
         android:orientation="vertical">
 
@@ -47,18 +47,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="Location"
+                    android:hint="Enter Source Address"
+                    android:maxLines="2"
                     android:padding="5dp" />
 
-
-                <TextView
-                    android:id="@+id/Locality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:singleLine="true"
-                    android:text="Click to change location"
-                    android:textSize="@dimen/medium_text" />
 
             </LinearLayout>
 
@@ -82,6 +74,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
+                    android:maxLines="2"
                     android:src="@drawable/ic_location_on_black" />
 
                 <AutoCompleteTextView
@@ -89,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="Location"
+                    android:hint="Enter Destination Address"
                     android:padding="5dp" />
 
             </LinearLayout>
